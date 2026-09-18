@@ -423,24 +423,10 @@
 
   shareXBtn.addEventListener('click', function () {
     if (!selectedPokemon) return;
-    shareXBtn.disabled = true;
-    var originalText = shareXBtn.textContent;
-    shareXBtn.textContent = '生成中...';
-    exportResultImage()
-      .then(function (dataUrl) {
-        downloadDataUrl(dataUrl);
-        var text = currentUserName + 'の運命のポケモンは「' + selectedPokemon.name + '」です！\n#運命のポケモン診断';
-        var url = buildResultUrl();
-        var intent = 'https://twitter.com/intent/tweet?text=' + encodeURIComponent(text) + '&url=' + encodeURIComponent(url);
-        window.open(intent, '_blank', 'noopener,noreferrer');
-      })
-      .catch(function () {
-        showError('画像の生成に失敗しました。');
-      })
-      .finally(function () {
-        shareXBtn.disabled = false;
-        shareXBtn.textContent = originalText;
-      });
+    var text = currentUserName + 'の運命のポケモンは「' + selectedPokemon.name + '」です！\n#運命のポケモン診断';
+    var url = buildResultUrl();
+    var intent = 'https://twitter.com/intent/tweet?text=' + encodeURIComponent(text) + '&url=' + encodeURIComponent(url);
+    window.open(intent, '_blank', 'noopener,noreferrer');
   });
 
   // URLに月・日・図鑑番号・パターン番号が含まれていれば、フォームを飛ばして
