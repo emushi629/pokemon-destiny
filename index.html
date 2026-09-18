@@ -1,0 +1,107 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>運命のポケモン診断</title>
+<meta name="description" content="誕生日と気になっているポケモンの名前を入力すると、運命のポケモンであるかどうか確かめられます。">
+
+<!-- OGP -->
+<meta property="og:title" content="運命のポケモン診断">
+<meta property="og:description" content="誕生日と気になっているポケモンの名前を入力すると、運命のポケモンであるかどうか確かめられます。">
+<meta property="og:type" content="website">
+<meta property="og:url" content="https://emushi629.github.io/pokemon-destiny/">
+<meta property="og:image" content="https://emushi629.github.io/pokemon-destiny/og-image.png">
+<meta name="twitter:card" content="summary_large_image">
+<meta name="twitter:title" content="運命のポケモン診断">
+<meta name="twitter:description" content="誕生日と気になっているポケモンの名前を入力すると、運命のポケモンであるかどうか確かめられます。">
+<meta name="twitter:image" content="https://emushi629.github.io/pokemon-destiny/og-image.png">
+
+<link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'%3E%3Ctext y='.9em' font-size='90'%3E%F0%9F%94%AE%3C/text%3E%3C/svg%3E">
+
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Zen+Maru+Gothic:wght@400;500;700;900&display=swap" rel="stylesheet">
+
+<link rel="stylesheet" href="style.css">
+</head>
+<body>
+
+<div class="page">
+  <header class="site-header">
+    <p class="header-badge">🔮 POKÉMON DESTINY</p>
+    <h1>運命のポケモン診断</h1>
+    <p class="lead">誕生日と気になっているポケモンの名前を入力すると、<br>運命のポケモンであるかどうか確かめられます。</p>
+  </header>
+
+  <main>
+    <section class="form-card" id="formCard">
+      <div class="field">
+        <label for="nameInput"><span class="label-icon">📛</span>お名前(任意)</label>
+        <input type="text" id="nameInput" placeholder="例：ポケ太郎" autocomplete="off" maxlength="20">
+      </div>
+
+      <div class="field">
+        <label for="birthMonth"><span class="label-icon">🎂</span><span id="birthdayLabelName">あなた</span>の誕生日</label>
+        <div class="birthday-selects">
+          <select id="birthMonth"></select>
+          <span class="birthday-unit">月</span>
+          <select id="birthDay"></select>
+          <span class="birthday-unit">日</span>
+        </div>
+      </div>
+
+      <div class="field">
+        <label for="pokemonInput"><span class="label-icon">✨</span>運命を確かめたいポケモン</label>
+        <div class="gen-filter" id="genFilter" role="group" aria-label="世代で絞り込む"></div>
+        <div class="autocomplete-wrap">
+          <input type="text" id="pokemonInput" placeholder="例：ピカチュウ" autocomplete="off">
+          <ul id="suggestList" class="suggest-list" hidden></ul>
+        </div>
+        <p class="hint" id="pokemonHint"></p>
+      </div>
+
+      <button id="diagnoseBtn" class="primary-btn" disabled>運命を診断する</button>
+      <p class="error" id="errorMsg" hidden></p>
+    </section>
+
+    <section class="result-card" id="resultCard" hidden>
+      <div class="result-inner" id="resultInner">
+        <p class="result-kicker" id="resultKicker"></p>
+        <div class="result-pokemon">
+          <div class="sprite-halo">
+            <img id="resultSprite" src="" alt="">
+          </div>
+          <div class="result-pokemon-name">
+            <span id="resultName"></span>
+            <span class="dex-no" id="resultDexNo"></span>
+          </div>
+        </div>
+
+        <div class="result-explain">
+          <p id="resultLead"></p>
+          <ol id="resultSteps" class="steps"></ol>
+          <p id="resultConclusion"></p>
+        </div>
+      </div>
+
+      <div class="result-actions" id="resultActions">
+        <button id="saveImageBtn" class="secondary-btn">画像を保存</button>
+        <button id="shareXBtn" class="secondary-btn share-x">Xでポストする</button>
+        <button id="retryBtn" class="text-btn">もう一度診断する</button>
+      </div>
+      <p class="share-hint">※Xにポストする際は、保存した画像を手動で添付してください。</p>
+    </section>
+  </main>
+
+  <footer class="site-footer">
+    <p>本サイトは非公式のファンメイドコンテンツです。ポケモンに関する名称・画像は各権利者に帰属します。</p>
+    <p class="version">v0.1.0</p>
+  </footer>
+</div>
+
+<script src="https://cdn.jsdelivr.net/npm/html-to-image@1.11.11/dist/html-to-image.min.js"></script>
+<script src="assets/engine.js"></script>
+<script src="script.js"></script>
+</body>
+</html>
