@@ -495,6 +495,20 @@ input[type="text"]:focus {
   font-size: 0.76rem;
 }
 
+.site-footer .author-link {
+  margin-top: 10px;
+}
+
+.site-footer .author-link a {
+  color: var(--primary);
+  font-weight: 700;
+  text-decoration: none;
+}
+
+.site-footer .author-link a:hover {
+  text-decoration: underline;
+}
+
 .site-footer .version {
   margin-top: 6px;
   opacity: 0.6;

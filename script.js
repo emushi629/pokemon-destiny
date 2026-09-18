@@ -135,6 +135,7 @@
     .then(function (res) { return res.json(); })
     .then(function (data) {
       POKEMON_LIST = data;
+      tryRestoreFromUrl();
     })
     .catch(function () {
       showError('ポケモンデータの読み込みに失敗しました。ページを再読み込みしてください。');
@@ -403,6 +404,23 @@
       });
   });
 
+  // この診断結果を再現できるURLを組み立てる(月・日・図鑑番号・パターン番号・名前)。
+  // 探索順序は固定なので、同じ月日・図鑑番号ならfindFormulasは常に同じ8パターンを
+  // 同じ順番で返す — パターン番号(i)さえ分かれば、リンクを開いた人にも同じ式を
+  // そのまま再現できる。
+  function buildResultUrl() {
+    var base = location.href.split('?')[0].split('#')[0];
+    var params = new URLSearchParams();
+    params.set('m', currentBirthday.m);
+    params.set('d', currentBirthday.d);
+    params.set('p', selectedPokemon.id);
+    params.set('i', formulaIndex);
+    if (currentUserName !== DEFAULT_NAME) {
+      params.set('n', currentUserName);
+    }
+    return base + '?' + params.toString();
+  }
+
   shareXBtn.addEventListener('click', function () {
     if (!selectedPokemon) return;
     shareXBtn.disabled = true;
@@ -412,7 +430,7 @@
       .then(function (dataUrl) {
         downloadDataUrl(dataUrl);
         var text = currentUserName + 'の運命のポケモンは「' + selectedPokemon.name + '」です！\n#運命のポケモン診断';
-        var url = location.href.split('?')[0].split('#')[0];
+        var url = buildResultUrl();
         var intent = 'https://twitter.com/intent/tweet?text=' + encodeURIComponent(text) + '&url=' + encodeURIComponent(url);
         window.open(intent, '_blank', 'noopener,noreferrer');
       })
@@ -424,4 +442,48 @@
         shareXBtn.textContent = originalText;
       });
   });
+
+  // URLに月・日・図鑑番号・パターン番号が含まれていれば、フォームを飛ばして
+  // その診断結果をそのまま表示する(Xでシェアされたリンクを開いたときのため)。
+  function tryRestoreFromUrl() {
+    var params = new URLSearchParams(location.search);
+    if (!params.has('m') || !params.has('d') || !params.has('p') || !params.has('i')) return;
+
+    var m = Number(params.get('m'));
+    var d = Number(params.get('d'));
+    var pokemonId = Number(params.get('p'));
+    var i = Number(params.get('i'));
+    var name = params.get('n');
+
+    if (!m || !d || !pokemonId) return;
+    var maxDay = DAYS_IN_MONTH[m - 1];
+    if (m < 1 || m > 12 || d < 1 || d > maxDay) return;
+
+    var pokemon = POKEMON_LIST.find(function (p) { return p.id === pokemonId; });
+    if (!pokemon) return;
+
+    var results = window.PokemonDestinyEngine.findFormulas(m, d, pokemonId, PATTERN_COUNT);
+    if (!results || results.length === 0) return;
+    if (!(i >= 0 && i < results.length)) i = 0;
+
+    // フォームにも同じ内容を反映しておく(「もう一度診断する」で戻ったときのため)
+    if (name) {
+      nameInput.value = name;
+      birthdayLabelName.textContent = name;
+    }
+    birthMonthSelect.value = m;
+    renderDayOptions();
+    birthDaySelect.value = d;
+    choosePokemon(pokemon);
+
+    formulaList = results;
+    formulaIndex = i;
+    currentBirthday = { m: m, d: d };
+    currentUserName = name || DEFAULT_NAME;
+    lastDiagnosedKey = m + '-' + d + '-' + pokemonId;
+
+    renderResult(pokemon);
+    formCard.hidden = true;
+    resultCard.hidden = false;
+  }
 })();
